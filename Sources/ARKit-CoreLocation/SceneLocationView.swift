@@ -232,19 +232,24 @@ public extension SceneLocationView {
 
     // MARK: LocationNodes
 
+    func addLocationNodeForCurrentLocationAndCustomPosition(locationNode: LocationNode, position: SCNVector3) {
+	guard let currentLocation = sceneLocationManager.currentLocation,
+            let sceneNode = sceneNode else { return }
+
+        locationNode.location = currentLocation
+        locationNode.position = position
+
+        locationNodes.append(locationNode)
+        sceneNode.addChildNode(locationNode)    
+    }
+	
     /// Upon being added, a node's location, locationConfirmed and position may be modified and should not be changed externally.
     /// Silently fails and returns without adding the node to the scene if any of `currentScenePosition`,
     /// `sceneLocationManager.currentLocation`, or `sceneNode` is `nil`.
     func addLocationNodeForCurrentPosition(locationNode: LocationNode) {
-        guard let currentPosition = currentScenePosition,
-            let currentLocation = sceneLocationManager.currentLocation,
-            let sceneNode = sceneNode else { return }
+        guard let currentPosition = currentScenePosition
 
-        locationNode.location = currentLocation
-        locationNode.position = currentPosition
-
-        locationNodes.append(locationNode)
-        sceneNode.addChildNode(locationNode)
+	self.addLocationNodeForCurrentLocationAndCustomPosition(locationNode: locationNode, position: currentPosition)
     }
 
     /// Each node's addition to the scene can silently fail; See `addLocationNodeForCurrentPosition(locationNode:)`.
